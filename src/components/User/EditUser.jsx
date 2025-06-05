@@ -1,24 +1,22 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react'
 import { useUserContext } from "../../contexts/UserContext";
-import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-const AddUser = () => {
+const EditUser = ({selectedUser,setEditState}) => {
 
-    const {saveUser,apiError,loading } = useUserContext();
+const{editUserData} = useUserContext();
 
 
-    const [formValues, setFormValues] = useState({
+const [formValues, setFormValues] = useState({
     userName: '',
     email: '',
     mobileNumber: '',
     department: '',
-    salary: '',
-    password: ''
+    salary: ''
   });
 
-  const [formError, setFormError] = useState('');
   
+  const [formError, setFormError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,14 +26,27 @@ const AddUser = () => {
     }));
   };
 
+  useEffect(()=>{
+    if (selectedUser)
+    {
+        setFormValues({
+        userName: selectedUser.userName ,
+        email: selectedUser.email ,
+        mobileNumber: selectedUser.mobileNumber,
+        department: selectedUser.department,
+        salary: selectedUser.salary
+      })
+    }
+  },[])
+
+
   const usernameRegex = /^[A-Za-z ]{3,20}$/;
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const mobileRegex = /^[0-9]{10}$/;
   const departmentRegex = /^(?!\s*$).+/;
   const salaryRegex = /^\d+(\.\d{1,2})?$/;
-  const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&#.])[A-Za-z\d@$!%*?&#.]{8,}$/;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e)=>{
     e.preventDefault();
 
     if (!usernameRegex.test(formValues.userName)) {
@@ -63,38 +74,32 @@ const AddUser = () => {
       return;
     }
 
-    if (!passwordRegex.test(formValues.password)) {
-      setFormError(
-        'Password must be at least 8 characters, include uppercase, lowercase, digit, and special character'
-      );
-      return;
-    }
-
     setFormError('');
 
-    const isSaved = await saveUser(formValues); // 🔥 get result
+    const formData = new FormData();
+    formData.append('userId',selectedUser.userId);
+    formData.append('userName',formValues.userName);
+    formData.append('email', formValues.email);
+    formData.append('mobileNumber', formValues.mobileNumber);
+    formData.append('department', formValues.department);
+    formData.append('salary', formValues.salary);
 
-    if (isSaved)
+    const success = await editUserData(formData);
+
+    if (success) 
     {
-
-      toast.success('User saved Successfully!!')
-
-      setFormValues({
-        userName: '',
-        email: '',
-        mobileNumber: '',
-        department: '',
-        salary: '',
-        password: ''
-      });
+      setEditState(false);
+      toast.success('User updated Successfully!!');
     }
-   
+
+    
 
   }
 
+
   return (
     <div className="text-orange-800 mt-8">
-      <h1 className="text-center">Sign Up</h1>
+      <h1 className="text-center">Edit</h1>
       <form
         onSubmit={handleSubmit}
         className="bg-white rounded-lg shadow-lg w-[50%] p-10 mx-auto"
@@ -109,7 +114,6 @@ const AddUser = () => {
             name="userName"
             value={formValues.userName}
             onChange={handleChange}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -124,7 +128,6 @@ const AddUser = () => {
             name="email"
             value={formValues.email}
             onChange={handleChange}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -139,7 +142,6 @@ const AddUser = () => {
             name="mobileNumber"
             value={formValues.mobileNumber}
             onChange={handleChange}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -154,7 +156,6 @@ const AddUser = () => {
             name="department"
             value={formValues.department}
             onChange={handleChange}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
@@ -169,34 +170,17 @@ const AddUser = () => {
             name="salary"
             value={formValues.salary}
             onChange={handleChange}
-            required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            value={formValues.password}
-            onChange={handleChange}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
 
         {formError && <p className="text-red-500 text-sm text-center mb-4">{formError}</p>}
-        {apiError && <p className="text-red-500 text-sm text-center mb-4">{apiError}</p>}
 
         <div className="flex gap-4 justify-center">
-          <button type="submit" disabled={loading} className="text-2xl bg-cyan-400 rounded-lg p-2 px-6">
-              {loading ? 'Saving...' : 'Sign Up'}
-            </button>
-          <Link className='p-2 bg-blue-200 rounded-lg' to='/allUsers'>All Users</Link>
+          <button type="submit" className="text-2xl bg-cyan-400 rounded-lg p-2 px-6 disabled:opacity-60 disabled:cursor-not-allowed">
+            Edit
+          </button>
+          <button className='bg-red-400 p-2 rounded-lg' onClick={()=>setEditState(false)}>Cancel</button>
         </div>
        
 
@@ -205,4 +189,4 @@ const AddUser = () => {
   )
 }
 
-export default AddUser
+export default EditUser
