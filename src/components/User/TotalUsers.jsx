@@ -3,6 +3,9 @@ import { useUserContext } from "../../contexts/UserContext";
 import EditUser from './EditUser';
 import { toast } from 'react-toastify';
 
+
+
+
 const TotalUsers = () => {
 
   const {fetchAllUsers,users,setUsers,deleteUser,removeUserFromState,loading,intialFetch} =useUserContext();
@@ -71,6 +74,7 @@ if (intialFetch) {
 
 
 
+
   return (
     <>
     
@@ -102,7 +106,9 @@ if (intialFetch) {
                     <td className='text-gray-700 px-6 py-4'>{eachUser.department}</td>
                     <td className='text-gray-700 px-6 py-4'>{eachUser.salary}</td>
                     <td className='flex gap-2 '>
-                      <button className='p-2 bg-red-200 text-white' onClick={()=>handleDelete(eachUser.userId)}>Delete</button>
+                      <button className='p-2 bg-red-200 text-white'  onClick={()=>handleDelete(eachUser.userId)} disabled={loading}>
+                          {loading ? 'Deleting...' : 'Delete'}
+                      </button>
                       <button className='p-2 bg-blue-200 text-white'
                         onClick={()=>{
                           setEditState(true);

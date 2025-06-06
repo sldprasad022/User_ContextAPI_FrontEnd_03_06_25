@@ -42,7 +42,7 @@ const saveUser = async (user) => {
 
 
 const fetchAllUsers = async () => {
-    setLoading(true);
+    setIntailFetch(true);
     try
     {
       const response = await axios.get(`${BASE_URL}/fetchAll`);
@@ -57,12 +57,12 @@ const fetchAllUsers = async () => {
     }
     finally
     {
-      setLoading(false);
+      setIntailFetch(false);
     }
 };
 
 const deleteUser = async (userId) => {
-    // setLoading(true);
+    setLoading(true);
     try
     {
       await axios.delete(`${BASE_URL}/deleteByUserId/${userId}`);
@@ -75,10 +75,10 @@ const deleteUser = async (userId) => {
       setApiError(message);
       return false;
     }
-    // finally 
-    // {
-    //   setLoading(false);
-    // }
+    finally 
+    {
+      setLoading(false);
+    }
 };
 
 
