@@ -86,9 +86,7 @@ const TotalUsersPagination_2 = () => {
 
       {/* Pagination controls */}
       <div className="mt-4 flex justify-between items-center">
-        <button
-          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 0))}
-          disabled={pageNumber === 0}
+        <button onClick={() => setPageNumber((prev) => Math.max(prev - 1, 0))} disabled={pageNumber === 0}
           className="px-4 py-2 bg-gray-200 text-gray-700 rounded disabled:opacity-50"
         >
           Previous

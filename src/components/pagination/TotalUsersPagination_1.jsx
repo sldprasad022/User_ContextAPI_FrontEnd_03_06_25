@@ -10,10 +10,10 @@ const TotalUsersPagination_1 = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`http://localhost:9292/api/user/fetchAllUsersWithPagination/${pageNumber}/${pageSize}`);
-      setUsers(res.data.content);
-      setTotalPages(res.data.totalPages);
-      setTotalElements(res.data.totalElements); // total users
+      const response = await axios.get(`http://localhost:9292/api/user/fetchAllUsersWithPagination/${pageNumber}/${pageSize}`);
+      setUsers(response.data.content);
+      setTotalPages(response.data.totalPages);
+      setTotalElements(response.data.totalElements); // total users
     } catch (err) {
       console.error("Failed to fetch users:", err);
     }
